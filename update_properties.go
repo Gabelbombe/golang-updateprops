@@ -1,32 +1,35 @@
 package main
 
 import (
-    "fmt"
-    "flag"
-    "os"
+  "strings"
+  "log"
+  "flag"
+  "os"
 )
 
+var (
+  filename string
+)
 
-func Check(e error) {
-  if e != nil {
-    panic(e)
-  }
+func isCommentOrBlank(line string) bool {
+  return strings.HasPrefix(line, "#") || "" == strings.TrimSpace(line)
 }
 
 
 func Exists(filename string) bool {
-  if _, err := os.Stat(filename); os.IsNotExist(err) {
-    return false
+  if _, err := os.Stat(filename); err == nil {
+  	return true
   }
-  return true
+  return false
 }
 
 
 func main() {
   var filename string
-
   flag.StringVar(&filename, "f", "filename", "The file location to be parsed")
-  if _, err := Exists(filename) {
-    Check(err)
+  flag.Parse()
+
+  if !Exists(filename) {
+    log.Fatal("File does not exist")
   }
 }
