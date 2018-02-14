@@ -104,7 +104,7 @@ func ingest(filename string) (err error) {
 
       nl := padWithSpace(n, " ", 80) + " = {{getv \"/" + e + "\" \"" + v + "\"}}"
       fmt.Println(nl)
-      buffer.WriteString(nl)
+      file.WriteString(nl)
       file.Sync()
     }
   }
