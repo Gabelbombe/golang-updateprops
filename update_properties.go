@@ -81,33 +81,27 @@ func ingest(filename string) (err error) {
 
       // newline creation for if block
       nl := "{{if exists \"/" + e + "\" -}}\n"
-      nl += padWithSpace(n, " ", 80) + " = {{getv \"/" + e + "\" \"" + v + "\"}}\n"
-      nl += "{{end -}}"
-
-      fmt.Println(nl)
-      buffer.WriteString(nl)
-      file.Sync()
+      nl += padWithSpace(n, " ", 80) + "= {{getv \"/" + e + "\" \"" + v + "\"}}\n"
+      nl += "{{end -}}\n"
+      file.WriteString(nl)
     }
 
     // dont proccess comments
     if (isCommentOrBlank(line)) {
       if (!strings.Contains(line, "=")) {
-        fmt.Println(line)
-        buffer.WriteString(line)
-        file.Sync()
+        file.WriteString(line + "\n")
       }
     } else {
       a := strings.Split(line, "=")
       n := strings.TrimSpace(a[0])
       v := strings.TrimSpace(a[1])
       e := strings.ToLower(strings.Replace(n, ".", "/", -1))
-
-      nl := padWithSpace(n, " ", 80) + " = {{getv \"/" + e + "\" \"" + v + "\"}}"
-      fmt.Println(nl)
+      nl := padWithSpace(n, " ", 80) + "= {{getv \"/" + e + "\" \"" + v + "\"}}\n"
       file.WriteString(nl)
-      file.Sync()
     }
   }
+
+  file.Sync()
 
   if err != io.EOF {
     fmt.Printf(" > Failed!: %v\n", err)
